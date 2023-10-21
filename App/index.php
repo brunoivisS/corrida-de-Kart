@@ -1,5 +1,6 @@
 <?php 
 require_once(__DIR__.'/Class/Kart/Kart.class.php');
+require_once(__DIR__.'/Class/functions/funcs.php');
 //  namespace \
 
 
@@ -20,8 +21,17 @@ require_once(__DIR__.'/Class/Kart/Kart.class.php');
     $input = 'kart.log';
     $ks = new Kart();
     $result= $ks->AlldataKart($input);
-    $ks->GetBestLapPilt($result);
 
+
+ 
+
+
+    
+    $ks->GetPositionPilot($result);
+
+
+    $ks->GetBestLapPilt($result);
+    $ks->returnTheBestLabRace($result);
     //PRIMEIRA TASK FEITA 
     //pega os dados e obtente a melhor volta de cada piloto
     
