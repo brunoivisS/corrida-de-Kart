@@ -1,31 +1,42 @@
 <?php
-// Verifica se o formulário foi enviado
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Verifica se o arquivo foi enviado sem erros
-    if (isset($_FILES["file"]) && $_FILES["file"]["error"] == 0) {
-        $arquivoTemporario = $_FILES["file"]["tmp_name"];
-        $nomeArquivo = $_FILES["arquivo"]["name"];
+require_once(__DIR__.'/Class/Kart/Kart.class.php');
 
-        // Verifica a extensão do arquivo
-        $extensaoPermitida = "log";
-        echo $nomeArquivo;
-        $extensaoArquivo = pathinfo($nomeArquivo, PATHINFO_EXTENSION);
+$action = $_REQUEST['acoes'];
+// var_dump($_REQUEST);
+switch ($action) {
+           case 'AlldataKart':
+                $logContent = file_get_contents($_FILES['logFile']['tmp_name']);
+                $ks = new Kart();
+                $result = $ks->AlldataKart($logContent);
+                // $ks->setArrayWithData($result);
+                // $get = $ks->getArrayWithData();  
+                //  $es = json_encode($get);
+                echo $result;
+                break;
+            case 'GetBestLapPilt':
+                $ks = new Kart();
+                $result = json_decode($_GET['response'],true);   
 
-        if (strtolower($extensaoArquivo) == strtolower($extensaoPermitida)) {
-            // Move o arquivo para o diretório desejado
-            $diretorioDestino = "tmp/log";
-            $caminhoCompleto = $diretorioDestino . $nomeArquivo;
+                $BestLapPilot = $ks->GetBestLapPilt($result);
+                echo $BestLapPilot;
+                break;
+            case 'GetPositionPilot':
+                $ks = new Kart();
+                $result = json_decode($_GET['response'],true);   
 
-            move_uploaded_file($arquivoTemporario, $caminhoCompleto);
+                $GetPositionPilot = $ks->GetPositionPilot($result);
+                echo $GetPositionPilot;
+                break;
+            case 'returnTheBestLabRace':
+                $ks = new Kart();
+                $result = json_decode($_GET['response'],true);   
 
-            echo "Upload bem-sucedido!";
-        } else {
-            echo $extensaoArquivo;
+                $GetBestLapRace = $ks->returnTheBestLabRace($result);
+                echo $GetBestLapRace;
+                break;
+            
+            default:
+                echo "Ação desconhecida";
         }
-    } else {
-        echo "Erro no envio do arquivo.";
-    }
-} else {
-    echo "Acesso inválido.";
-}
+
 ?>

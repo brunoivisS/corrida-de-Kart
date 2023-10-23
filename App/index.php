@@ -1,37 +1,25 @@
-<?php 
-require_once(__DIR__.'/Class/Kart/Kart.class.php');
-require_once(__DIR__.'/Class/functions/funcs.php');
-//  namespace \
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Corrida de Kart</title>
+</head>
+<body>
+    <h1>Corrida de Kart</h1>
+    <p>Remova a pimeira linha do seu arquivo(caso tenha dados irregulares)</p>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="logFile" accept=".log">
+        <input type="button" id="uploadButton" value="Enviar Arquivo">
+    </form>
 
+    <div id="result">
+        <h2>Resultado:</h2>
+        <span id="error"></span>
+        <span id="Postions"></span>
+        <span id="resultText"></span>
+        <prev id="BestLapRace"></prev>
+    </div>
 
-
-    // function tempoParaSeguddoss($tempo): int
-    // {
-    //     list($minutos, $segundos, $milissegundos) = explode(':', $tempo);
-    //     return ($minutos * 60) + $segundos + ($milissegundos / 1000);
-    // }
-    
-
-
-    //{ ["Hora"]=> string(12) "23:49:08.277" ["Piloto"]=> string(13) "038 - F.MASSA" ["NumberoVolta"]=> int(1) ["TempVolta"]=> string(8) "1:02.852" ["mediaVol"]=> string(6) "44,275" } 
-    //aqui eu envio o arquivo para a function que coleta os dados do arquivo
-    //e transforma em array todas as linhas
-    // ao executa: var_dump($result); verá o resultado do que seria uma array com todos os dados que precisamos.
-    // use var_dump($result['Piloto']); para seleciona apenas um objeto
-    $input = 'kart.log';
-    $ks = new Kart();
-    $result= $ks->AlldataKart($input);
-
-
- 
-
-
-    
-    $ks->GetPositionPilot($result);
-
-
-    $ks->GetBestLapPilt($result);
-    $ks->returnTheBestLabRace($result);
-    //PRIMEIRA TASK FEITA 
-    //pega os dados e obtente a melhor volta de cada piloto
-    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>
