@@ -1,10 +1,10 @@
 <?php
  class Kart {
 
-     
+     //essa function é resposavel por ler o arquivo
      function AlldataKart($kart) {
-        $arrayDados = []; 
-        (array)$arquivo = file('public/'.$kart.'', FILE_IGNORE_NEW_LINES);
+            (array)$arquivo = file('public/'.$kart.'', FILE_IGNORE_NEW_LINES);
+            $arrayDados = [];
     
         foreach ($arquivo as $linha){
 
@@ -19,6 +19,7 @@
 
                 $dados = [
                     "Hora"=>$hora,
+                    "PilotoName"=>$partes[3],
                     "Piloto"=>$codigoPiloto,
                     "NumberoVolta"=>$numeroVolta,
                     "TempVolta"=>$tempoVolta,
@@ -29,8 +30,10 @@
         }
         return $arrayDados;
     }
+    //essa function serve para pega a melhor volta de cada piloto
     function GetBestLapPilt($dados) {
         $data = $dados;
+
         
         // Crie um array associativo para armazenar as melhores voltas de cada piloto
         $melhoresVoltas = array();
@@ -53,11 +56,122 @@
                 $melhoresVoltas[$piloto] = $item;
             }
         }
-        var_dump($melhoresVoltas);
+        // var_dump($melhoresVoltas['038 - F.MASSA']);
         foreach ($melhoresVoltas as $title) {
             
             echo("<h1>A melhor volta do ".$title['Piloto']." é ".$title['TempVolta'].".</h1>");
         }
     }
+
+    //aqui pega o melhor volta da corrida
+    function returnTheBestLabRace($dados) {
+        $corrida = $dados;
+        $melhorVolta = null;
+       
+        $melhorTempo = PHP_INT_MAX; // Inicializa com um valor alto
+        $funcs = new Funcs();
+        foreach ($corrida as $volta) {
+            $tempoVolta = $volta["TempVolta"];
+            // print_r($volta['TempVolta']);
+            if ($tempoVolta < $melhorTempo) {
+                $melhorTempo = $tempoVolta;
+                $melhorVolta = $volta;
+            }
+        }
+        echo "<h1>Melhor volta da corrida:\n";
+        echo "Piloto: " . $melhorVolta["Piloto"] . "\n";
+        echo "Tempo da volta: " . $melhorVolta["TempVolta"] . "\n";
+        echo "Numero da volta: " . $melhorVolta["NumberoVolta"] . "\n";
+        echo "Hora da volta: " . $melhorVolta["Hora"] . "</h1><br>";
+    }
+    //essa function serve para pega as posições dos ganhadores
+    function GetPositionPilot($dados) {
+        $data = $dados;
+        $funcs = new Funcs();
+        // Crie um array associativo para armazenar as melhores voltas de cada piloto
+        $melhoresVoltas = array();
+        // $piloto = array();
+        foreach ($data as $item) {
+            //definido nome do piloto
+            $piloto = $item['Piloto'];
+             // Converte tempo de volta para segundos
+            $tempoVolta = strtotime(str_replace('.', '', $item['TempVolta']));
+            //salvando a volta do piloto para compara com o valor max da labs
+            $voltaNumber = $item['NumberoVolta'];
+            $valorMaxdeLabs = $funcs->valorMaxdaCorrida($dados);
+            
+        if($voltaNumber === $valorMaxdeLabs){
+            if (isset($melhoresVoltas[$piloto])) {
+                $melhorTempo = $melhoresVoltas[$piloto]['TempVolta'];
+                
+                if ($tempoVolta < $melhorTempo) {
+                    // Atualize a melhor volta
+                    $melhoresVoltas[$piloto] = $item;
+                }
+            } else {
+                // Se o piloto ainda não tem uma melhor volta, adicione esta
+                $melhoresVoltas[$piloto] = $item;
+            }
+        }
+
+        }
+        $arraywithTotalTmp = [];
+
+     
+        (array)$vas = Kart::GetTempPilots($data);
+        foreach ($melhoresVoltas as $title) {
+        
+               $tempototal = $vas[$title['PilotoName']];
+            $dados = [
+                "Piloto"=>$title['Piloto'],
+                "NumberoVolta"=>$title['NumberoVolta'],
+                "TempToltal"=>$tempototal,
+                "TempLapFinal"=>$title['TempVolta']
+            ];
+            
+            $arraywithTotalTmp[] = $dados;
+        }
+        usort($arraywithTotalTmp, function ($a, $b) {
+            $tempoA = $a["TempToltal"];
+            $tempoB = $b["TempToltal"];
+            return strcmp($tempoA, $tempoB);
+        });
+        //essa vareivel serve para saber que ganhou a corrida e para ver o tempo depois que o vencedor ganha
+        $PilotoWin = $arraywithTotalTmp[0];
+
+
+        $posicao = 1;
+        echo "Posição de chegada: <br>\n";
+        foreach ($arraywithTotalTmp as $title) {
+            
+            echo $posicao . ". " . $title['Piloto'] . " - ".$title['NumberoVolta']." -  ".$title['TempToltal']." <br>\n";
+            $posicao++;
+        }
+        
+    }
+    //essa function serve para pega os tempo total da corrida e retorna na variavel 
+    //ela foi feita para exibir o tmp total de cada corredor.
+    function GetTempPilots(array $data){
+        $arraywithTmp = [];
+        $temposPorPiloto = array();
+        $funcs = new Funcs();
+        
+        foreach ($data as $registro) {
+            $piloto = $registro["PilotoName"];
+            $tempoVolta = $registro["TempVolta"];
+            
+            if (!isset($temposPorPiloto[$piloto])) {
+                $temposPorPiloto[$piloto] = array();
+            }
+            
+            
+            
+            $temposPorPiloto[$piloto][] = $tempoVolta;
+            $arraywithTmp[$piloto] = $funcs->somaTempos($temposPorPiloto[$piloto]);
+        }
+        
+        return $arraywithTmp;
+            
+      }
 
 }
