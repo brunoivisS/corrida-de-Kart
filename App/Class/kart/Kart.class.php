@@ -1,12 +1,30 @@
 <?php
+    require_once(__DIR__.'/../../Class/functions/funcs.php');
  class Kart {
+
+    private $arrayWithData = null;
+
+
+    public function getArrayWithData() {
+        return $this->arrayWithData;
+    }
+
+    public function setArrayWithData($data) {
+        $this->arrayWithData = $data;
+    }
 
      //essa function é resposavel por ler o arquivo
      function AlldataKart($kart) {
-            (array)$arquivo = file('public/'.$kart.'', FILE_IGNORE_NEW_LINES);
-            $arrayDados = [];
+        $funs = new Funcs();
+        $lines = explode("\n", $kart);
+        // (array)$arquivo = $kart;
+       $validaçaodosDados =  $funs->validacaodeLinha($lines);
+       if(!$validaçaodosDados){
+            echo "Parece que seu dados não estao com padroes difirente.";
+       } else{
+        $arrayDados = [];
     
-        foreach ($arquivo as $linha){
+        foreach ($lines as $linha){
 
             $partes = preg_split('/\s+/', trim($linha));
 
@@ -26,9 +44,14 @@
                     "mediaVol"=>$mediaSpeed,
                 ];
 
-            $arrayDados[] = $dados;
+                $arrayDados[] = $dados;
         }
-        return $arrayDados;
+        return json_encode($arrayDados);
+       }
+        // var_dump($lines);
+        // var_dump($kart);;
+        // fazer o kart vira um array despois coloca no kart e vai tia os espaço dentro do 
+        
     }
     //essa function serve para pega a melhor volta de cada piloto
     function GetBestLapPilt($dados) {
@@ -79,9 +102,9 @@
             }
         }
         echo "<h1>Melhor volta da corrida:\n";
-        echo "Piloto: " . $melhorVolta["Piloto"] . "\n";
-        echo "Tempo da volta: " . $melhorVolta["TempVolta"] . "\n";
-        echo "Numero da volta: " . $melhorVolta["NumberoVolta"] . "\n";
+        echo "Piloto: " . $melhorVolta["Piloto"] . ",\n";
+        echo "Tempo da volta: " . $melhorVolta["TempVolta"] . ",\n";
+        echo "Numero da volta: " . $melhorVolta["NumberoVolta"] . ",\n";
         echo "Hora da volta: " . $melhorVolta["Hora"] . "</h1><br>";
     }
     //essa function serve para pega as posições dos ganhadores

@@ -34,6 +34,20 @@
         
         return $numeroVoltaMaisAlto;
     }
+    //essa function retorna um bool true se as linhas estiverem corretas com o padrao desejado
+    //caso o arquivo esteja com outro padrao ele não convertido para um array.
+    function validacaodeLinha($linhas) {
+        $padrao = '/^\d{2}:\d{2}:\d{2}\.\d{3}\s+\d{3}\s–\s[A-Z]+\.[A-Z]+\s\d+\s\d{1,2}:\d{2}\.\d{3}\s\d+(\,\d+)?$/';
+        
+        foreach ($linhas as $linha) {
+            $linha = rtrim($linha);
+            if (!preg_match($padrao, $linha)) {
+                return false; // Return false immediately if an invalid line is found
+            }
+        }
+        
+        return true; // Return true only if all lines match the pattern
+    }
     
 
 
