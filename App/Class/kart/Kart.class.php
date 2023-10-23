@@ -20,7 +20,7 @@
         // (array)$arquivo = $kart;
        $validaçaodosDados =  $funs->validacaodeLinha($lines);
        if(!$validaçaodosDados){
-            echo "Parece que seu dados não estao com padroes difirente.";
+            echo "Parece que seu dados estao com padroes difirente.";
        } else{
         $arrayDados = [];
     
