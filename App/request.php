@@ -5,13 +5,21 @@ $action = $_REQUEST['acoes'];
 // var_dump($_REQUEST);
 switch ($action) {
            case 'AlldataKart':
-                $logContent = file_get_contents($_FILES['logFile']['tmp_name']);
-                $ks = new Kart();
-                $result = $ks->AlldataKart($logContent);
-                // $ks->setArrayWithData($result);
-                // $get = $ks->getArrayWithData();  
-                //  $es = json_encode($get);
-                echo $result;
+                try {
+                    $data = $_FILES['logFile']['tmp_name'];
+                    if(empty($data)){
+                       throw new Exceptio("Voce precisa seleciona um arquivo.");
+                    }
+                    $logContent = file_get_contents($data);
+                    $ks = new Kart();
+                    $result = $ks->AlldataKart($logContent);
+                    // $ks->setArrayWithData($result);
+                    // $get = $ks->getArrayWithData();  
+                    //  $es = json_encode($get);
+                    echo $result;    
+                } catch (Exceptio $e) {
+                    echo $e->getMensagemFormatada();
+                }
                 break;
             case 'GetBestLapPilt':
                 $ks = new Kart();

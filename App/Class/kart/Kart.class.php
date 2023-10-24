@@ -1,5 +1,7 @@
 <?php
+
     require_once(__DIR__.'/../../Class/functions/funcs.php');
+    require_once(__DIR__.'/../messagem/messagem.class.php');
  class Kart {
 
     private $arrayWithData = null;
@@ -14,44 +16,45 @@
     }
 
      //essa function é resposavel por ler o arquivo
-     function AlldataKart($kart) {
-        $funs = new Funcs();
-        $lines = explode("\n", $kart);
-        // (array)$arquivo = $kart;
-       $validaçaodosDados =  $funs->validacaodeLinha($lines);
-       if(!$validaçaodosDados){
-            echo "Parece que seu dados estao com padroes difirente.";
-       } else{
-        $arrayDados = [];
+     public function AlldataKart($kart) {
+        try {
+            $funs = new Funcs();
+            $lines = explode("\n", $kart);
+           
+            $validacaoDosDados = $funs->validacaoDeLinha($lines);
+
+            if (!$validacaoDosDados) {
+                throw new Exceptio("Parece que seus dados estão com padrões diferentes.");
+            }
+            $arrayDados = [];
+            
+            foreach ($lines as $linha){
+
+                $partes = preg_split('/\s+/', trim($linha));
     
-        foreach ($lines as $linha){
-
-            $partes = preg_split('/\s+/', trim($linha));
-
-            $hora = $partes[0];
-            $codigoPiloto = $partes[1].' - '.$partes[3];
-            $numeroVolta = (int)$partes[4];
-            $tempoVolta = $partes[5];
-            $mediaSpeed = $partes[6];
-
-
-                $dados = [
-                    "Hora"=>$hora,
-                    "PilotoName"=>$partes[3],
-                    "Piloto"=>$codigoPiloto,
-                    "NumberoVolta"=>$numeroVolta,
-                    "TempVolta"=>$tempoVolta,
-                    "mediaVol"=>$mediaSpeed,
-                ];
-
-                $arrayDados[] = $dados;
+                $hora = $partes[0];
+                $codigoPiloto = $partes[1].' - '.$partes[3];
+                $numeroVolta = (int)$partes[4];
+                $tempoVolta = $partes[5];
+                $mediaSpeed = $partes[6];
+    
+    
+                    $dados = [
+                        "Hora"=>$hora,
+                        "PilotoName"=>$partes[3],
+                        "Piloto"=>$codigoPiloto,
+                        "NumberoVolta"=>$numeroVolta,
+                        "TempVolta"=>$tempoVolta,
+                        "mediaVol"=>$mediaSpeed,
+                    ];
+    
+                    $arrayDados[] = $dados;
+            }
+            
+            return json_encode($arrayDados);
+        } catch (Exceptio $e) {
+            return $e->getMensagemFormatada();
         }
-        return json_encode($arrayDados);
-       }
-        // var_dump($lines);
-        // var_dump($kart);;
-        // fazer o kart vira um array despois coloca no kart e vai tia os espaço dentro do 
-        
     }
     //essa function serve para pega a melhor volta de cada piloto
     function GetBestLapPilt($dados) {
