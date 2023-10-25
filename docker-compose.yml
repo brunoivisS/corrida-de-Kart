@@ -1,0 +1,9 @@
+version: '3'
+services:
+  webserver:
+    image: php:8.2-apache
+    container_name: Kart
+    ports:
+      - "80:80"
+    volumes:
+      - ./App:/var/www/html
